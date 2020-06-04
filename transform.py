@@ -32,17 +32,20 @@ for root in roots:
             mask2_path = root+"/outputs/attachments/"+dir[:-4]+"_2.png"
 
             img = cv2.imread(img_path)
-            mask1 = cv2.imread(mask1_path, 0)/255 # 读成灰度图
-            mask2 = cv2.imread(mask2_path, 0)/255
+            mask1 = cv2.imread(mask1_path, 0) # 读成灰度图
+            mask2 = cv2.imread(mask2_path, 0)
 
-            _, binary_mask1 = cv2.threshold(mask1, 0.5, 1, cv2.THRESH_BINARY)
-            _, binary_mask2 = cv2.threshold(mask2, 0.5, 1, cv2.THRESH_BINARY)
+            if mask1 is not None:
+                mask1 = mask1/255
+                _, binary_mask1 = cv2.threshold(mask1, 0.5, 1, cv2.THRESH_BINARY)
+                label1 = label(binary_mask1)
+                props1 = regionprops(label1)
 
-            label1 = label(binary_mask1)
-            label2 = label(binary_mask2)
-
-            props1 = regionprops(label1)
-            props2 = regionprops(label2)
+            if mask2 is not None:
+                mask2 = mask2/255
+                _, binary_mask2 = cv2.threshold(mask2, 0.5, 1, cv2.THRESH_BINARY)
+                label2 = label(binary_mask2)
+                props2 = regionprops(label2)
             
             
             image_path = images_root + dir
@@ -51,24 +54,26 @@ for root in roots:
             # os.mknod(label_path)
 
             with open(label_path, "w+", encoding="utf-8") as f:
-                for prop in props1:
-                    print("found bounding box", prop.bbox)
-                    cls_id = 0
-                    x = (prop.bbox[1] + prop.bbox[3])/2/img.shape[1]
-                    y = (prop.bbox[0] + prop.bbox[2])/2/img.shape[0]
-                    w = (prop.bbox[3] - prop.bbox[1])/img.shape[1]
-                    h = (prop.bbox[2] - prop.bbox[0])/img.shape[0]
-                    label_str = "{} {:.6f} {:.6f} {:.6f} {:.6f}\n".format(cls_id, x, y, w, h)
-                    f.write(label_str)
-                for prop in props2:
-                    print("found bounding box", prop.bbox)
-                    cls_id = 1
-                    x = (prop.bbox[1] + prop.bbox[3])/2/img.shape[1]
-                    y = (prop.bbox[0] + prop.bbox[2])/2/img.shape[0]
-                    w = (prop.bbox[3] - prop.bbox[1])/img.shape[1]
-                    h = (prop.bbox[2] - prop.bbox[0])/img.shape[0]
-                    label_str = "{} {:.6f} {:.6f} {:.6f} {:.6f}\n".format(cls_id, x, y, w, h)
-                    f.write(label_str)
+                if mask1 is not None:
+                    for prop in props1:
+                        print("found bounding box", prop.bbox)
+                        cls_id = 0
+                        x = (prop.bbox[1] + prop.bbox[3])/2/img.shape[1]
+                        y = (prop.bbox[0] + prop.bbox[2])/2/img.shape[0]
+                        w = (prop.bbox[3] - prop.bbox[1])/img.shape[1]
+                        h = (prop.bbox[2] - prop.bbox[0])/img.shape[0]
+                        label_str = "{} {:.6f} {:.6f} {:.6f} {:.6f}\n".format(cls_id, x, y, w, h)
+                        f.write(label_str)
+                if mask2 is not None:
+                    for prop in props2:
+                        print("found bounding box", prop.bbox)
+                        cls_id = 1
+                        x = (prop.bbox[1] + prop.bbox[3])/2/img.shape[1]
+                        y = (prop.bbox[0] + prop.bbox[2])/2/img.shape[0]
+                        w = (prop.bbox[3] - prop.bbox[1])/img.shape[1]
+                        h = (prop.bbox[2] - prop.bbox[0])/img.shape[0]
+                        label_str = "{} {:.6f} {:.6f} {:.6f} {:.6f}\n".format(cls_id, x, y, w, h)
+                        f.write(label_str)
                     
             f.close()
 
