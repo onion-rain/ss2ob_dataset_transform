@@ -1,2 +1,8 @@
 dataset/
 new_dataset/
+data/
+error_dataset/
+*.jpg
+*.png
+*.zip
+*.json
