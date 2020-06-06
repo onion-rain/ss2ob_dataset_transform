@@ -1,8 +1,8 @@
 from shutil import copyfile
 
-valid_txt_path = "/home/xueruini/onion_rain/pytorch/dataset/thyroid/valid_imgs_catalogue.txt"
-imgs_root = "/home/xueruini/onion_rain/pytorch/dataset/thyroid/images/"
-valid_imgs_root = "/home/xueruini/onion_rain/pytorch/dataset/thyroid/valid_imgs/"
+valid_txt_path = "thyroid_dataset/valid_list.txt"
+imgs_root = "thyroid_dataset/images/"
+valid_imgs_root = "valid_imgs/"
 
 with open(valid_txt_path, "r", encoding="utf-8") as f:
     for line in f.readlines():
