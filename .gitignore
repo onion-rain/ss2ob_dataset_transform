@@ -1,8 +1,10 @@
 dataset/
-new_dataset/
+thyroid_dataset/
 data/
 error_dataset/
+color_dataset/
 *.jpg
 *.png
 *.zip
 *.json
+*.txt

@@ -7,8 +7,8 @@ import shutil
 import numpy as np
 from colorama import Fore, Back, Style
 
-images_root = "new_dataset/images/" # save root
-labels_root = "new_dataset/labels/"
+images_root = "thyroid_dataset/images/" # save root
+labels_root = "thyroid_dataset/labels/"
 
 root0 = "dataset" # unprocessed dataset
 roots = []
@@ -42,6 +42,12 @@ for root in roots:
             if mask1 is not None:
                 i = 0
                 while 1:
+
+                    if i == len(np.argwhere(mask1[..., 3]>200)):
+                        # raise Exception("what is this: {}".format(mask1_path))
+                        print(Fore.RED+"Error"+Fore.RESET+": what is this: {}".format(mask1_path))
+                        break
+
                     pixel = mask1[np.argwhere(mask1[..., 3]>200)[i][0]][np.argwhere(mask1[..., 3]>200)[i][1]]
 
                     if pixel[0] > 180 and pixel[1] < 150 and pixel[2] > 110:
@@ -54,17 +60,18 @@ for root in roots:
                         thyroid_mask = mask1
                         thyroid_mask_path = mask1_path
                         break
-
-                    if i >= len(np.argwhere(mask1[..., 3]>200))-1:
-                        # raise Exception("what is this: {}".format(mask1_path))
-                        print(Fore.RED+"Error"+Fore.RESET+": what is this: {}".format(mask1_path))
-                        break
-                    else:
-                        i += 1
+                        
+                    i += 1
 
             if mask2 is not None:
                 i = 0
                 while 1:
+
+                    if i == len(np.argwhere(mask2[..., 3]>200)):
+                        # raise Exception("what is this: {}".format(mask2_path))
+                        print(Fore.RED+"Error"+Fore.RESET+": what is this: {}".format(mask2_path))
+                        break
+
                     pixel = mask2[np.argwhere(mask2[..., 3]>200)[i][0]][np.argwhere(mask2[..., 3]>200)[i][1]]
 
                     if pixel[0] > 180 and pixel[1] < 150 and pixel[2] > 110:
@@ -78,12 +85,7 @@ for root in roots:
                         thyroid_mask_path = mask2_path
                         break
 
-                    if i >= len(np.argwhere(mask2[..., 3]>200))-1:
-                        # raise Exception("what is this: {}".format(mask2_path))
-                        print(Fore.RED+"Error"+Fore.RESET+": what is this: {}".format(mask2_path))
-                        break
-                    else:
-                        i += 1
+                    i += 1
 
 
             # if mask1[mask1.nonzero()[0][i]][mask1.nonzero()[1][j]][3]
