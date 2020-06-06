@@ -24,6 +24,9 @@ for root1 in root1s:
 # thyroid: mask1[300][mask1[300].nonzero()]取值为143/144，判断[140, 150]为thyroid
 # thyroid: mask1[300][mask1[300].nonzero()]取值为142，判断[140, 150]为thyroid
 
+def approximate(value1, value2, offset=5):
+    return max(value1, value2) - min(value1, value2) < offset
+
 for root in roots:
     dirs = os.listdir(root)
     for dir in dirs:
@@ -50,16 +53,23 @@ for root in roots:
 
                     pixel = mask1[np.argwhere(mask1[..., 3]>200)[i][0]][np.argwhere(mask1[..., 3]>200)[i][1]]
 
-                    if pixel[0] > 180 and pixel[1] < 150 and pixel[2] > 110:
-                        assert nodule_mask is None
-                        nodule_mask = mask1
-                        nodule_mask_path = mask1_path
-                        break
-                    elif pixel[0] < 180 and pixel[1] > 150 and pixel[2] < 110:
+                    # if pixel[0] > 180 and pixel[1] < 150 and pixel[2] > 110:
+                    if approximate(pixel[0], 160) and approximate(pixel[1], 174) and approximate(pixel[2], 83): # thyroid
                         assert thyroid_mask is None
                         thyroid_mask = mask1
                         thyroid_mask_path = mask1_path
                         break
+                    elif approximate(pixel[0], 197) and approximate(pixel[1], 135) and approximate(pixel[2], 139): # nodule
+                        assert nodule_mask is None
+                        nodule_mask = mask1
+                        nodule_mask_path = mask1_path
+                        break
+                    elif approximate(pixel[0], 104) and approximate(pixel[1], 46) and approximate(pixel[2], 134): # nodule error color
+                        assert nodule_mask is None
+                        nodule_mask = mask1
+                        nodule_mask_path = mask1_path
+                        break
+                    # elif pixel[0] < 180 and pixel[1] > 150 and pixel[2] < 110:
                         
                     i += 1
 
@@ -74,15 +84,20 @@ for root in roots:
 
                     pixel = mask2[np.argwhere(mask2[..., 3]>200)[i][0]][np.argwhere(mask2[..., 3]>200)[i][1]]
 
-                    if pixel[0] > 180 and pixel[1] < 150 and pixel[2] > 110:
+                    if approximate(pixel[0], 160) and approximate(pixel[1], 174) and approximate(pixel[2], 83): # thyroid
+                        assert thyroid_mask is None
+                        thyroid_mask = mask2
+                        thyroid_mask_path = mask2_path
+                        break
+                    elif approximate(pixel[0], 197) and approximate(pixel[1], 135) and approximate(pixel[2], 139): # nodule
                         assert nodule_mask is None
                         nodule_mask = mask2
                         nodule_mask_path = mask2_path
                         break
-                    elif pixel[0] < 180 and pixel[1] > 150 and pixel[2] < 110:
-                        assert thyroid_mask is None
-                        thyroid_mask = mask2
-                        thyroid_mask_path = mask2_path
+                    elif approximate(pixel[0], 104) and approximate(pixel[1], 46) and approximate(pixel[2], 134): # nodule error color
+                        assert nodule_mask is None
+                        nodule_mask = mask2
+                        nodule_mask_path = mask2_path
                         break
 
                     i += 1
